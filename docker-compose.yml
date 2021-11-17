@@ -1,0 +1,27 @@
+version: '3'
+services:
+  php-fpm:
+    container_name: php-fpm
+    image: php:7.4-fpm
+    volumes:
+      - ./:/var/www/
+    networks:
+      - app-network
+
+  # The Web Server
+  web:
+    container_name: nginx
+    build:
+      context: ./
+      dockerfile: web.dockerfile
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    links:
+      - php-fpm
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
